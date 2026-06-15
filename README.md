@@ -11,14 +11,17 @@ A pista opera como um cliente MQTT que:
 
 ## Hardware
 
-| Componente | Função |
-|---|---|
-| ESP32 | Microcontrolador / conectividade Wi-Fi + MQTT |
-| Display LCD | Exibição de status da corrida |
-| Teclado matricial | Registro do nome do piloto |
-| Sensor de largada | Detecta passagem na linha de largada |
-| Sensor de reta | Detecta passagem no fim da reta (8 m após a largada) |
-| Botão | Solicitação local de bandeira amarela |
+| Componente | Função | Lib |
+|---|---|---|
+| ESP32 | Microcontrolador / conectividade Wi-Fi + MQTT | `WiFi.h`, `PubSubClient.h` |
+| LCD 16x2 I2C | Exibição de status da corrida | `LiquidCrystal_I2C.h` |
+| Teclado matricial | Registro do nome do piloto | `Keypad.h` |
+| Sensor ultrassônico de largada | Detecta passagem na linha de largada | `NewPing.h` |
+| Sensor ultrassônico de reta | Detecta passagem no fim da reta (8 m após a largada) | `NewPing.h` |
+| Botão | Solicitação local de bandeira amarela | — |
+
+> Sensores ultrassônicos instanciados como `NewPing sonar(TRIG, ECHO, MAX_DIST)`; passagem detectada por limiar de distância.
+> O broker MQTT real ainda não está definido — durante o desenvolvimento usa-se um **mock**.
 
 ## Tópicos MQTT
 
@@ -28,8 +31,10 @@ A pista opera como um cliente MQTT que:
 |---|---|---|
 | `g1_piloto` | nome | Nome do piloto registrado |
 | `g1_ba` | `1` / `0` | Solicitação (`1`) ou fim (`0`) de bandeira amarela |
-| `g1_tvolta` | segundos | Tempo da volta (`0` se houve bandeira amarela durante a volta) |
+| `g1_tvolta` | milissegundos | Tempo da volta (`0` se houve bandeira amarela durante a volta) |
 | `g1_vreta` | m/s | Velocidade na reta (8 m / tempo) |
+
+> Todos os tempos são publicados em **milissegundos**; a velocidade em **m/s**.
 
 ### Assinatura
 
@@ -66,8 +71,8 @@ AGUARDANDO_CONFIGURACAO ──(br_nvoltas)──► INSCRICAO ──(br_largada)
 ### Velocidade na reta (sensor de reta)
 
 ```
-tempoReta  = agora - ultimaPassagemLargada
-velocidade = 8 / tempoReta   (reta de 8 metros)
+tempoReta  = agora - ultimaPassagemLargada      (ms)
+velocidade = 8000 / tempoReta                    (m/s, reta de 8 metros)
 ```
 
 Publica em `g1_vreta`.
