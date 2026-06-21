@@ -2,9 +2,6 @@
 //  Telas do LCD 16x2 I2C (LiquidCrystal_I2C)
 // ============================================================
 
-#include <LiquidCrystal_I2C.h>
-#include "config.h"
-
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
 
 void displayInit() {

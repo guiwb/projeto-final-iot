@@ -2,16 +2,10 @@
 //  Perifericos: sensores ultrassonicos, teclado e botao
 // ============================================================
 
-#include <NewPing.h>
-#include <Keypad.h>
-#include "config.h"
-
-// ---- Sensores ultrassonicos (NewPing) -----------------------
+// ---- Sensor ultrassonico (NewPing) --------------------------
 NewPing sonarLargada(LARGADA_TRIG, LARGADA_ECHO, MAX_DIST);
-NewPing sonarReta(RETA_TRIG, RETA_ECHO, MAX_DIST);
 
 static unsigned long ultimaDetecLargada = 0;
-static unsigned long ultimaDetecReta    = 0;
 
 // ---- Teclado matricial 4x4 ----------------------------------
 char teclas[KEYPAD_ROWS][KEYPAD_COLS] = {
@@ -20,8 +14,8 @@ char teclas[KEYPAD_ROWS][KEYPAD_COLS] = {
   { '7', '8', '9', 'C' },
   { '*', '0', '#', 'D' }
 };
-byte pinosLinhas[KEYPAD_ROWS] = { 13, 12, 14, 27 };
-byte pinosColunas[KEYPAD_COLS] = { 26, 25, 33, 32 };
+byte pinosLinhas[KEYPAD_ROWS] = { 14, 27, 26, 25 };
+byte pinosColunas[KEYPAD_COLS] = { 33, 32, 15, 13 };
 Keypad teclado = Keypad(makeKeymap(teclas), pinosLinhas, pinosColunas,
                         KEYPAD_ROWS, KEYPAD_COLS);
 
@@ -49,12 +43,6 @@ static bool passou(NewPing& sonar, unsigned long& ultimaDetec) {
 void checkSensorLargada() {
   if (passou(sonarLargada, ultimaDetecLargada)) {
     registrarVolta();
-  }
-}
-
-void checkSensorReta() {
-  if (passou(sonarReta, ultimaDetecReta)) {
-    registrarReta();
   }
 }
 

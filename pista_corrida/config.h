@@ -25,7 +25,6 @@
 #define TOPIC_PILOTO "g1_piloto"
 #define TOPIC_BA     "g1_ba"
 #define TOPIC_TVOLTA "g1_tvolta"   // ms
-#define TOPIC_VRETA  "g1_vreta"    // m/s
 
 // ---- Topicos assinados --------------------------------------
 #define TOPIC_NVOLTAS "br_nvoltas"
@@ -41,24 +40,20 @@
 // I2C padrao do ESP32: SDA = 21, SCL = 22
 
 // ---- Sensores ultrassonicos (NewPing) -----------------------
-#define LARGADA_TRIG 5
-#define LARGADA_ECHO 18
-#define RETA_TRIG    19
-#define RETA_ECHO    23
+#define LARGADA_TRIG 2
+#define LARGADA_ECHO 4
 #define MAX_DIST     200    // cm - alcance maximo do NewPing
 #define DETEC_DIST   15     // cm - passagem detectada abaixo deste valor
 #define SENSOR_DEBOUNCE 500 // ms - intervalo minimo entre passagens
 
 // ---- Botao bandeira amarela ---------------------------------
-#define BTN_BANDEIRA 4
-#define BTN_DEBOUNCE 200    // ms
+#define BTN_BANDEIRA  5
+#define BTN_DEBOUNCE  200   // ms
+#define LED_BANDEIRA  12
 
 // ---- Teclado matricial 4x4 ----------------------------------
 #define KEYPAD_ROWS 4
 #define KEYPAD_COLS 4
 // Pinos das linhas e colunas (definidos em sensors.ino)
-
-// ---- Pista --------------------------------------------------
-#define RETA_METROS 8.0     // comprimento da reta para calculo de velocidade
 
 #endif // CONFIG_H

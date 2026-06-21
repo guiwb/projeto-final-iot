@@ -22,6 +22,11 @@
 //      br_fim
 // ============================================================
 
+#include <NewPing.h>
+#include <Keypad.h>
+#include <LiquidCrystal_I2C.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
 #include "config.h"
 
 // ---- Estados da maquina --------------------------------------
@@ -78,7 +83,6 @@ void loop() {
     case CORRIDA:
       if (sensoresHabilitados) {
         checkSensorLargada();
-        checkSensorReta();
       }
       break;
   }
@@ -149,16 +153,6 @@ void registrarVolta() {
   } else {
     telaCorrida(nomePiloto, voltaAtual, totalVoltas);
   }
-}
-
-// Passagem pelo fim da reta -> calcula velocidade media na reta
-void registrarReta() {
-  unsigned long agora = millis();
-  unsigned long tempoReta = agora - ultimaPassagemLargada; // ms
-  if (tempoReta == 0) return;
-
-  float velocidade = (RETA_METROS * 1000.0) / tempoReta;   // m/s
-  mqttPublish(TOPIC_VRETA, String(velocidade, 2));
 }
 
 // ============================================================

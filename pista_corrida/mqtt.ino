@@ -3,8 +3,6 @@
 //  Selecionada por USE_MQTT_MOCK em config.h
 // ============================================================
 
-#include "config.h"
-
 #if USE_MQTT_MOCK
 // ------------------------------------------------------------
 //  MOCK: publica no Serial e injeta mensagens do broker
@@ -47,9 +45,6 @@ void mqttLoop() {
 // ------------------------------------------------------------
 //  REAL: Wi-Fi + PubSubClient
 // ------------------------------------------------------------
-
-#include <WiFi.h>
-#include <PubSubClient.h>
 
 WiFiClient   wifiClient;
 PubSubClient mqttClient(wifiClient);
