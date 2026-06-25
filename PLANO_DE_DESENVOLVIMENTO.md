@@ -71,10 +71,11 @@
 **Objetivo:** comportamento completo de bandeira amarela.
 
 - [ ] Botão local: alternar publicação `g1_ba = 1` / `g1_ba = 0` conforme estado atual.
-- [ ] `br_iba`: ativar modo bandeira amarela, exibir `BANDEIRA AMARELA / Volta: X/N` no LCD.
-- [ ] `br_fba`: desativar e restaurar tela normal.
+- [ ] `br_iba`: ativar modo bandeira amarela, acender o LED (`LED_BANDEIRA`), exibir `BANDEIRA AMARELA / Volta: X/N` no LCD e **pausar a contabilização de voltas** (sensor ignorado enquanto a bandeira estiver ativa).
+- [ ] `br_fba`: desativar, apagar o LED, restaurar tela normal e **voltar a contabilizar** as voltas.
 - [ ] **Regra especial:** flag `voltaComBandeira` — setada quando ocorre bandeira amarela durante a volta; ao concluir a volta, publicar `g1_tvolta = 0` em vez do tempo real e limpar a flag.
 - [ ] Garantir que a flag é avaliada por volta (bandeira que termina antes da linha de chegada ainda zera a volta em curso).
+- [ ] Ao atingir `totalVoltas`, encerrar a contabilização (`finalizarCorrida`) e exibir a conclusão no LCD.
 
 **Entrega:** ciclo completo de bandeira amarela implementado.
 
@@ -97,5 +98,6 @@
 | `passagemInicioReta` | Referência (ms) da passagem no início da reta |
 | `voltaAtual` | Contador de voltas (`X/N` no LCD) |
 | `totalVoltas` | Recebido em `br_nvoltas` |
-| `bandeiraAtiva` | Estado atual da bandeira amarela |
+| `bandeiraAtiva` | Estado atual da bandeira amarela (pausa a contagem e acende o LED) |
 | `voltaComBandeira` | Marca volta "contaminada" → publica `g1_tvolta = 0` |
+| `corridaEmAndamento` | Indica corrida ativa; habilita a leitura do sensor de largada |

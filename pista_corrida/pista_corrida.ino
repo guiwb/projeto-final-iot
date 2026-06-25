@@ -48,7 +48,7 @@ unsigned long ultimaPassagemLargada = 0;
 bool bandeiraAtiva     = false;  // bandeira amarela global (br_iba/br_fba)
 bool voltaComBandeira  = false;  // volta atual "contaminada"
 bool solicitacaoBandeira = false; // pedido local via botao (g1_ba)
-bool sensoresHabilitados = false;
+bool corridaEmAndamento = false;
 
 // ============================================================
 //  Setup
@@ -81,7 +81,8 @@ void loop() {
       break;
 
     case CORRIDA:
-      if (sensoresHabilitados) {
+      // bandeira amarela ativa: nao contabiliza voltas
+      if (corridaEmAndamento && !bandeiraAtiva) {
         checkSensorLargada();
       }
       break;
@@ -101,7 +102,8 @@ void irParaAguardando() {
   bandeiraAtiva = false;
   voltaComBandeira = false;
   solicitacaoBandeira = false;
-  sensoresHabilitados = false;
+  corridaEmAndamento = false;
+  digitalWrite(LED_BANDEIRA, LOW);
   telaAguardando();
 }
 
@@ -117,7 +119,7 @@ void irParaCorrida() {
   ultimaPassagemLargada = horarioLargada;
   voltaAtual = 0;
   voltaComBandeira = false;
-  sensoresHabilitados = true;
+  corridaEmAndamento = true;
   estado = CORRIDA;
   telaCorrida(nomePiloto, voltaAtual, totalVoltas);
 }
@@ -148,11 +150,18 @@ void registrarVolta() {
     mqttPublish(TOPIC_TVOLTA, String(tempoVolta));
   }
 
-  if (bandeiraAtiva) {
-    telaBandeira(voltaAtual, totalVoltas);
-  } else {
-    telaCorrida(nomePiloto, voltaAtual, totalVoltas);
+  telaCorrida(nomePiloto, voltaAtual, totalVoltas);
+
+  if (voltaAtual >= totalVoltas) {
+    finalizarCorrida();
   }
+}
+
+// Atingiu o total de voltas: encerra a contabilizacao e exibe no LCD
+void finalizarCorrida() {
+  corridaEmAndamento = false;
+  digitalWrite(LED_BANDEIRA, LOW);
+  telaCorridaConcluida(nomePiloto, totalVoltas);
 }
 
 // ============================================================
@@ -169,19 +178,21 @@ void handleMessage(const String& topic, const String& payload) {
     }
   } else if (topic == TOPIC_FIM) {
     if (estado == CORRIDA) {
-      sensoresHabilitados = false;
+      corridaEmAndamento = false;
       telaFim();
       delay(2000);
       irParaAguardando();
     }
   } else if (topic == TOPIC_IBA) {
     bandeiraAtiva = true;
+    digitalWrite(LED_BANDEIRA, HIGH);
     if (estado == CORRIDA) {
       voltaComBandeira = true;
       telaBandeira(voltaAtual, totalVoltas);
     }
   } else if (topic == TOPIC_FBA) {
     bandeiraAtiva = false;
+    digitalWrite(LED_BANDEIRA, LOW);
     if (estado == CORRIDA) {
       telaCorrida(nomePiloto, voltaAtual, totalVoltas);
     }

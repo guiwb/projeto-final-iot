@@ -19,6 +19,7 @@ A pista opera como um cliente MQTT que:
 | Sensor ultrassônico de largada | Detecta passagem na linha de largada | `NewPing.h` |
 | Sensor ultrassônico de reta | Detecta passagem no fim da reta (8 m após a largada) | `NewPing.h` |
 | Botão | Solicitação local de bandeira amarela | — |
+| LED | Indicação visual de bandeira amarela ativa | — |
 
 > Sensores ultrassônicos instanciados como `NewPing sonar(TRIG, ECHO, MAX_DIST)`; passagem detectada por limiar de distância.
 > O broker MQTT real ainda não está definido — durante o desenvolvimento usa-se um **mock**.
@@ -79,15 +80,16 @@ Publica em `g1_vreta`.
 
 ### Bandeira amarela
 
-- **Botão local:** alterna a solicitação — publica `g1_ba = 1` (se inativa) ou `g1_ba = 0` (se ativa).
-- **`br_iba`:** ativa o modo bandeira amarela e exibe aviso no LCD (carros parados).
-- **`br_fba`:** desativa e atualiza o LCD.
+- **Botão local:** alterna a solicitação (publica `g1_ba = 1` se inativa ou `g1_ba = 0` se ativa).
+- **`br_iba`:** ativa o modo bandeira amarela, acende o LED, exibe aviso no LCD (carros parados) e **pausa a contabilização de voltas** (passagens ignoradas enquanto a bandeira estiver ativa).
+- **`br_fba`:** desativa, apaga o LED, atualiza o LCD e **volta a contabilizar** as voltas.
 
 > **Regra especial:** se durante uma volta ocorreu qualquer bandeira amarela, ao concluir essa volta publica-se `g1_tvolta = 0` em vez do tempo real (a volta foi "contaminada" pela paralisação).
 
-### Encerramento (`br_fim`)
+### Encerramento
 
-Desabilita sensores, para cronômetros, exibe "Corrida Encerrada", ignora novas passagens e retorna a `AGUARDANDO_CONFIGURACAO`.
+- **Total de voltas atingido:** ao registrar a última volta (`voltaAtual >= totalVoltas`), encerra a contabilização e exibe a conclusão da corrida no LCD.
+- **`br_fim`:** desabilita sensores, para cronômetros, exibe "Corrida Encerrada", ignora novas passagens e retorna a `AGUARDANDO_CONFIGURACAO`.
 
 ## Telas do LCD
 
@@ -96,7 +98,8 @@ Desabilita sensores, para cronômetros, exibe "Corrida Encerrada", ignora novas 
 | Antes da largada | `Piloto: XXXXX` / `Voltas: N` / `Aguardando largada` |
 | Durante a corrida | `Piloto: XXXXX` / `Volta: X/N` |
 | Bandeira amarela | `BANDEIRA AMARELA` / `Volta: X/N` |
-| Corrida encerrada | `CORRIDA FINALIZADA` / `Obrigado!` |
+| Total de voltas atingido | `<piloto> fim` / `Voltas: N/N` |
+| Corrida encerrada (`br_fim`) | `CORRIDA` / `FINALIZADA` |
 
 ## Documentação
 

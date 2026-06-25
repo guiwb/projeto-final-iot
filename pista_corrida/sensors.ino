@@ -24,6 +24,8 @@ static unsigned long ultimoBotao = 0;
 
 void sensorsInit() {
   pinMode(BTN_BANDEIRA, INPUT_PULLUP);
+  pinMode(LED_BANDEIRA, OUTPUT);
+  digitalWrite(LED_BANDEIRA, LOW);
 }
 
 // Detecta passagem quando a distancia cai abaixo do limiar,
