@@ -49,7 +49,8 @@
 
 - [ ] Implementar estados: `AGUARDANDO_CONFIGURACAO` → `INSCRICAO` → `CORRIDA` → (fim) → `AGUARDANDO_CONFIGURACAO`.
 - [ ] `AGUARDANDO_CONFIGURACAO`: aguardar `br_nvoltas` e armazenar total de voltas.
-- [ ] `INSCRICAO`: capturar nome pelo teclado, exibir no LCD, publicar `g1_piloto`; aguardar `br_largada`.
+- [ ] `INSCRICAO`: capturar nome pelo teclado, exibir no LCD, publicar `g1_piloto` (marca `pilotoInscrito`); aguardar `br_largada`.
+- [ ] `br_largada` sem inscrição confirmada: exibir aviso de inscrição perdida no LCD e voltar a `AGUARDANDO_CONFIGURACAO` (piloto aguarda nova corrida).
 - [ ] `CORRIDA`: registrar `horarioLargada` (ms), habilitar sensores.
 - [ ] Encerramento por `br_fim`: desabilitar sensores, parar cronômetros, tela final, voltar ao estado inicial.
 - [ ] Telas do LCD por estado (antes da largada, durante, encerrada).
@@ -101,3 +102,4 @@
 | `bandeiraAtiva` | Estado atual da bandeira amarela (pausa a contagem e acende o LED) |
 | `voltaComBandeira` | Marca volta "contaminada" → publica `g1_tvolta = 0` |
 | `corridaEmAndamento` | Indica corrida ativa; habilita a leitura do sensor de largada |
+| `pilotoInscrito` | Nome confirmado (`g1_piloto` publicado); habilita a largada |

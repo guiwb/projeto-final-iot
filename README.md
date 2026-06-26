@@ -58,8 +58,10 @@ AGUARDANDO_CONFIGURACAO ──(br_nvoltas)──► INSCRICAO ──(br_largada)
 | Estado | Ações |
 |---|---|
 | `AGUARDANDO_CONFIGURACAO` | Conecta ao MQTT e aguarda `br_nvoltas` |
-| `INSCRICAO` | Lê nome do piloto pelo teclado, exibe no LCD, publica em `g1_piloto` |
+| `INSCRICAO` | Lê nome do piloto pelo teclado, exibe no LCD, publica em `g1_piloto` (confirma a inscrição) |
 | `CORRIDA` | Inicia cronômetro, habilita sensores, publica tempos e velocidades |
+
+> **Inscrição perdida:** se `br_largada` chegar sem a inscrição confirmada (nome não publicado em `g1_piloto`), o LCD avisa que o piloto perdeu a inscrição e o sistema volta a `AGUARDANDO_CONFIGURACAO` para aguardar uma nova corrida.
 
 ## Lógica da Corrida
 
@@ -97,6 +99,7 @@ Publica em `g1_vreta`.
 |---|---|
 | Antes da largada | `Piloto: XXXXX` / `Voltas: N` / `Aguardando largada` |
 | Durante a corrida | `Piloto: XXXXX` / `Volta: X/N` |
+| Inscrição perdida | `Inscr. perdida` / `Aguarde nova corr` |
 | Bandeira amarela | `BANDEIRA AMARELA` / `Volta: X/N` |
 | Total de voltas atingido | `<piloto> fim` / `Voltas: N/N` |
 | Corrida encerrada (`br_fim`) | `CORRIDA` / `FINALIZADA` |

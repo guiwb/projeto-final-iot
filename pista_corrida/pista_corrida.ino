@@ -49,6 +49,7 @@ bool bandeiraAtiva     = false;  // bandeira amarela global (br_iba/br_fba)
 bool voltaComBandeira  = false;  // volta atual "contaminada"
 bool solicitacaoBandeira = false; // pedido local via botao (g1_ba)
 bool corridaEmAndamento = false;
+bool pilotoInscrito    = false;  // nome confirmado (g1_piloto publicado)
 
 // ============================================================
 //  Setup
@@ -103,6 +104,7 @@ void irParaAguardando() {
   voltaComBandeira = false;
   solicitacaoBandeira = false;
   corridaEmAndamento = false;
+  pilotoInscrito = false;
   digitalWrite(LED_BANDEIRA, LOW);
   telaAguardando();
 }
@@ -110,6 +112,7 @@ void irParaAguardando() {
 void irParaInscricao(int voltas) {
   totalVoltas = voltas;
   nomePiloto = "";
+  pilotoInscrito = false;
   estado = INSCRICAO;
   telaInscricao(nomePiloto);
 }
@@ -173,8 +176,13 @@ void handleMessage(const String& topic, const String& payload) {
       irParaInscricao(payload.toInt());
     }
   } else if (topic == TOPIC_LARGADA) {
-    if (estado == INSCRICAO) {
+    if (estado == INSCRICAO && pilotoInscrito) {
       irParaCorrida();
+    } else if (estado != CORRIDA) {
+      // largada sem inscricao confirmada: piloto fica de fora
+      telaInscricaoPerdida();
+      delay(2000);
+      irParaAguardando();
     }
   } else if (topic == TOPIC_FIM) {
     if (estado == CORRIDA) {

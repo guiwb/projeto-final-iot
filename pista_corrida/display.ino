@@ -39,6 +39,10 @@ void telaBandeira(int volta, int total) {
   displayLinhas("BANDEIRA AMARELA", "Volta: " + String(volta) + "/" + String(total));
 }
 
+void telaInscricaoPerdida() {
+  displayLinhas("Inscr. perdida", "Aguarde nova corr");
+}
+
 void telaCorridaConcluida(const String& nome, int total) {
   displayLinhas(nome + " fim", "Voltas: " + String(total) + "/" + String(total));
 }

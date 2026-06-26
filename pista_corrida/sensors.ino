@@ -70,6 +70,7 @@ void atualizarInscricao() {
   if (tecla == '#') {
     if (nomePiloto.length() > 0) {
       mqttPublish(TOPIC_PILOTO, nomePiloto);
+      pilotoInscrito = true;
       telaAguardandoLargada(nomePiloto);
     }
   } else if (tecla == '*') {
